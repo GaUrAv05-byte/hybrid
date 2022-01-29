@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:background="#297045">
+    <TextView
+        android:id="@+id/songName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="40px"
+        android:fontFamily="cursive"
+        android:gravity="center"
+        android:text="@string/songName"
+        android:textColor="#C3E991"
+        android:textSize="40dp"
+        android:textStyle="bold" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:hint="Now PLaying"
+        android:gravity="center"
+        android:fontFamily="cursive"
+        android:textStyle="bold"
+        android:textSize="35dp"
+        android:textColor="#000501"
+        android:id="@+id/songtitle"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/play"
+        android:text="Play"
+        android:layout_marginBottom="10px"
+        android:backgroundTint="#FF934F"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/pause"
+        android:backgroundTint="#A63A50"
+        android:layout_marginBottom="10px"
+        android:text="Pause"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/forward"
+        android:layout_marginBottom="10px"
+        android:text="Forward"
+        android:backgroundTint="#FF934F"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/rewind"
+        android:layout_marginBottom="10px"
+        android:text="Rewind"
+        android:backgroundTint="#A63A50"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="10px"
+        android:id="@+id/stop"
+        android:backgroundTint="#FF934F"
+        android:text="Stop"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:id="@+id/restart"
+        android:layout_marginBottom="10px"
+        android:text="Restart"
+        android:backgroundTint="#A63A50"/>
+</LinearLayout
+
+
+
+
+package com.example.audioplayer;
+import androidx.appcompat.app.AppCompatActivity;
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+public class MainActivity extends AppCompatActivity {
+    Button play,pause,reset,forward,rewind,stop;
+    TextView songtitle;
+    MediaPlayer mediaplayer;
+    int startTime = 0;
+    int stopTime = 0;
+    int forwardTime= 5000;
+    int rewindTime = 5000;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        songtitle = findViewById(R.id.songtitle);
+        play = findViewById(R.id.play);
+        pause = findViewById(R.id.pause);
+        reset = findViewById(R.id.restart);
+        forward = findViewById(R.id.forward);
+        rewind = findViewById(R.id.rewind);
+        stop = findViewById(R.id.stop);
+        songtitle.setText("Blue Bird");
+        play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Playing music now",
+                        Toast.LENGTH_SHORT).show();
+                mediaplayer =
+                        MediaPlayer.create(MainActivity.this,R.raw.bluebird);
+                mediaplayer.start();
+            }
+        });
+        reset.setOnClickListener(new View.OnClickListener() {
+        
+            @Override
+            public void onClick(View v) {
+                mediaplayer.reset();
+                mediaplayer.start();
+            }
+        });
+        pause.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mediaplayer.pause();
+            }
+        });
+        stop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mediaplayer.stop();
+            }
+        });
+        forward.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int current = mediaplayer.getCurrentPosition();
+                if((current+forwardTime)<=(stopTime =
+                        mediaplayer.getDuration()))
+                {
+                    mediaplayer.seekTo(current+forwardTime);
+                }
+                else {
+                    Toast.makeText(MainActivity.this, "Cant Skip forward",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        rewind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int current = mediaplayer.getCurrentPosition();
+                if((current+rewindTime)>=(startTime))
+                {
+                    mediaplayer.seekTo(current+forwardTime);
+                }
+                else {
+                    mediaplayer.seekTo(0);
+                }
+            }
+        });
+    }
